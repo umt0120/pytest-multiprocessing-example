@@ -1,5 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor
-from pytest import CaptureFixture
+from _pytest.capture import CaptureFixture
 
 
 def print_message(num: int, message: str) -> None:
@@ -32,6 +32,6 @@ def test_print_in_multi_process(capfd: CaptureFixture) -> None:
     print_in_multi_process()
 
     out, err = capfd.readouterr()
-    sorted_out = sorted(str(out).split("\n"))
-
-    assert sorted_out[0] == "0 番目のメッセージをprintします ... [print_in_multi_processから呼び出されました]"
+    out_list = sorted([line for line in str(out).split("\n") if line != ""])
+    # マルチプロセスとcapfdを組み合わせると文字化けする
+    assert out_list[0] == "0 番目のメッセージをprintします ... [print_in_multi_processから呼び出されました]"
